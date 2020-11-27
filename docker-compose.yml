@@ -26,14 +26,24 @@ services:
       - rabbitmq
   
   rabbitmq:
-    image: rabbitmq
+    image: rabbitmq:3-management #-alpine
+    #image: rabbitmq:management
     container_name: rabbitmq
     ports:
-    - "5672:5672"
-    - "15672:15672"
-    # environment:
-    #   - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:-admin}
-    #   - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS:-admin}
+    - 5672:5672
+    - 15672:15672
+    volumes:
+    #- ./.docker/rabbitmq/etc/:/etc/rabbitmq/
+    - /c/temp/_DockerCompose/rabbitmq/etc/:/etc/rabbitmq/
+    #- /c/temp/_DockerCompose/rabbitmq/data/:/var/lib/rabbitmq/
+    - /c/temp/_DockerCompose/rabbitmq/data/:/var/lib/rabbitmq/mnesia/ #https://github.com/docker-library/rabbitmq/issues/171#issuecomment-316302131
+    - /c/temp/_DockerCompose/rabbitmq/logs/:/var/log/rabbitmq/
+    environment:
+    #- RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE}
+    - RABBITMQ_ERLANG_COOKIE='mysecret'
+    - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER:-admin}
+    - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS:-admin}
+    #docker exec rabbitmq rabbitmq-plugins enable rabbitmq_management
 
   # rabbitmq2:
   #   image: rabbitmq
